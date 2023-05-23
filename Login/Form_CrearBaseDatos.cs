@@ -11,8 +11,12 @@ using System.Windows.Forms;
 
 namespace Login
 {
+
+
     public partial class Form_CrearBaseDatos : Form
     {
+
+
         public Form_CrearBaseDatos()
         {
             InitializeComponent();
@@ -30,37 +34,97 @@ namespace Login
 
         private void CrearNuevaBaseDatos()
         {
+            
+            string nombreBase = textBox_nombreBaseDatos.Text;
 
-            try
+            bool comprobarBase = ComprobarBase(nombreBase);
+            bool baseSinNombre = BaseSinNombre();
+
+            if (comprobarBase == true)
             {
-                string nombreBase = textBox_nombreBaseDatos.Text;
+                MessageBox.Show($"La base {nombreBase} ya existe");
 
-                string str = "server=localhost; port=5432; database=postgres; user id=postgres; password=sa123;";
-
-                using (NpgsqlConnection connection = new NpgsqlConnection(str))
+            }
+            if (baseSinNombre == true)
+            {
+                MessageBox.Show("No es posible crear una base sin nombre");
+            }
+            else
+            {
+                try
                 {
-                    connection.Open();
 
-                    using (NpgsqlCommand command = new NpgsqlCommand())
+                    string str = "server=localhost; port=5432; database=postgres; user id=postgres; password=sa123;";
+
+                    using (NpgsqlConnection connection = new NpgsqlConnection(str))
                     {
-                        command.Connection = connection;
-                        command.CommandText = $"CREATE DATABASE {nombreBase}";
+                        connection.Open();
 
-                        command.ExecuteNonQuery();
+                        using (NpgsqlCommand command = new NpgsqlCommand())
+                        {
+                            command.Connection = connection;
+                            command.CommandText = $"CREATE DATABASE {nombreBase}";
 
+                            command.ExecuteNonQuery();
+
+                        }
+                        connection.Close();
                     }
-                    connection.Close();
+                    MessageBox.Show($"La base de datos {nombreBase} a sido creada exitosamente");
+                    this.Close();
                 }
+                catch (Exception)
+                {
+                    throw;
+                }
+
             }
-            catch (Exception)
+        }
+
+
+        private bool ComprobarBase(string _nombreBase)
+        {
+            string str = "server=localhost; port=5432; database=postgres; user id=postgres; password=sa123;";
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(str))
             {
+                connection.Open();
 
-                throw;
+                // Consulta SQL para verificar la existencia de la base de datos
+                string consulta = "SELECT COUNT(*) FROM pg_database WHERE datname = @nombreBase;";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(consulta, connection))
+                {
+                    command.Parameters.AddWithValue("nombreBase", _nombreBase);
+
+                    // Ejecutar la consulta y obtener el resultado
+                    int count = Convert.ToInt32(command.ExecuteScalar());
+
+                    // Si count es mayor a 0, significa que la base de datos existe
+                    bool existe = count > 0;
+
+                    return existe; //true
+
+                }
+
             }
+        }
 
 
+        private bool BaseSinNombre()
+        {
+            if (textBox_nombreBaseDatos == null)
+            {
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
 
         }
+
+
 
         private void button_cancelar_Click(object sender, EventArgs e)
         {

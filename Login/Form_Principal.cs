@@ -30,7 +30,6 @@ namespace Login
         private void CargarComboBox_databases()
         {
 
-
             string str = "server=localhost; port=5432; database=postgres; user id=postgres;password=sa123;";
             NpgsqlConnection cn = new NpgsqlConnection();
             cn.ConnectionString = str;
@@ -60,5 +59,93 @@ namespace Login
             Form_CrearBaseDatos formBaseDatos = new Form_CrearBaseDatos();
             formBaseDatos.ShowDialog();
         }
+
+        private void button_eliminar_Click(object sender, EventArgs e)
+        {
+            EliminarBaseDatos();
+        }
+
+        private void EliminarBaseDatos()
+        {
+            string baseAEliminar = comboBox_databases.Text;
+
+            DialogResult dr =  MessageBox.Show($"Estas seguro de eliminar las base de datos: {baseAEliminar}?", "Borrar la base?", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+
+            if (dr == DialogResult.Yes)
+            {
+                try
+                {               
+                    string str = "server=localhost; port=5432; database=postgres; user id=postgres; password=sa123;";
+
+                    using (NpgsqlConnection connection = new NpgsqlConnection(str))
+                    {
+                        connection.Open();
+
+                        using (NpgsqlCommand command = new NpgsqlCommand())
+                        {
+                            command.Connection = connection;
+                            command.CommandText = $"DROP DATABASE {baseAEliminar}";
+
+                            command.ExecuteNonQuery();
+
+                        }
+                        connection.Close();
+                    }
+
+                    MessageBox.Show($"La base de datos: {baseAEliminar} a sido eliminada exitosamente");
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            if (dr == DialogResult.No)
+            {
+                MessageBox.Show($"La base de datos: {baseAEliminar} no ha sido eliminada");
+            }
+
+            
+
+        }
+
+        private void button_refrescar_Click(object sender, EventArgs e)
+        {
+            ActualizarRegistroBases();
+        }
+
+
+
+        private void ActualizarRegistroBases()
+        {
+            try
+            {
+                string str = "server=localhost; port=5432; database=postgres; user id=postgres; password=sa123;";
+
+                using (NpgsqlConnection connection = new NpgsqlConnection(str))
+                {
+                    connection.Open();
+
+                    using (NpgsqlCommand command = new NpgsqlCommand())
+                    {
+                        string sql = "SELECT datname FROM pg_database WHERE datistemplate = false;";
+                        comboBox_databases.Items.Clear();
+                        CargarComboBox_databases();
+
+                    }
+                    connection.Close();
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
     }
 }

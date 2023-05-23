@@ -52,6 +52,7 @@
             this.button_cancelar.TabIndex = 1;
             this.button_cancelar.Text = "Cancelar";
             this.button_cancelar.UseVisualStyleBackColor = true;
+            this.button_cancelar.Click += new System.EventHandler(this.button_cancelar_Click);
             // 
             // label1
             // 
@@ -69,7 +70,7 @@
             this.textBox_password.Size = new System.Drawing.Size(218, 22);
             this.textBox_password.TabIndex = 3;
             // 
-            // Form1
+            // Form_Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -78,7 +79,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_cancelar);
             this.Controls.Add(this.button_conectar);
-            this.Name = "Form1";
+            this.Name = "Form_Login";
             this.Text = "Login";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
