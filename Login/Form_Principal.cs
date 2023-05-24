@@ -130,13 +130,15 @@ namespace Login
 
                     using (NpgsqlCommand command = new NpgsqlCommand())
                     {
-                        string sql = "SELECT datname FROM pg_database WHERE datistemplate = false;";
+                        //string sql = "SELECT datname FROM pg_database WHERE datistemplate = false;";
                         comboBox_databases.Items.Clear();
                         CargarComboBox_databases();
 
                     }
                     connection.Close();
                 }
+
+                
 
             }
             catch (Exception)
@@ -145,7 +147,23 @@ namespace Login
                 throw;
             }
         }
+        private void crearTablaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form_CrearTabla crearTabla = new Form_CrearTabla();
+            crearTabla.Show();
+        }
 
+        private void verTablasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form_CrearColumna crearColumna = new Form_CrearColumna();
+            crearColumna.Show();
+        }
 
+        private void verTodasLasFilasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form_VerRegistros verRegistros = new Form_VerRegistros();
+            verRegistros.Show();
+        }
     }
+
 }
